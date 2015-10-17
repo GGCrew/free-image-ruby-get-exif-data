@@ -8,6 +8,7 @@ Summary of workflow:
 - Use FreeImage functions to parse values from the FITAG object
 
 Sample code:
+
 	def get_exif_data(image_file, metadata_model, key_name)
 		return_value = nil # Assume failure
 
