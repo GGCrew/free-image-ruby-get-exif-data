@@ -1,5 +1,5 @@
 # free-image-ruby-get-exif-data
-A one-file monkey-patch to CFIS's FreeImage bindings for Ruby gem that adds the ability to read EXIF data from image files.
+A one-file monkey-patch to CFIS's "FreeImage bindings for Ruby" gem that adds the ability to read EXIF data from image files.
 
 Summary of workflow:
 - Load image via FreeImage (or just the image's header data)
