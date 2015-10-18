@@ -43,3 +43,31 @@ Sample code:
 		return return_value
 	end
 
+
+Sample code to find an EXIF metadata model and iterate through its tags:
+
+	def list_exif_tags(image_file)
+		# Load only header data from source file
+		FreeImage::Bitmap.new(
+			FreeImage.FreeImage_Load(
+				FreeImage::FreeImage_GetFIFFromFilename(image_file),
+				image_file,
+				FreeImage::AbstractSource::Decoder::FIF_LOADNOPIXELS
+			)
+		) do |image_header|
+
+			fitag_pointer = FFI::MemoryPointer.new :pointer
+	
+			for model in [:fimd_exif_exif, :fimd_exif_main, :fimd_exif_gps, :fimd_exif_makernote, :fimd_exif_interop, :fimd_iptc, :fimd_xmp, :fimd_geotiff, :fimd_animation, :fimd_custom, :fimd_exif_raw]
+				# Function will return nil if EXIF model is not found
+				metadata_pointer = FreeImage.FreeImage_FindFirstMetadata(model, image_header, fitag_pointer)
+				if metadata_pointer
+					begin
+						fitag = FreeImage::FITAG.new(fitag_pointer.read_pointer())
+						p "#{model} -- #{FreeImage.FreeImage_GetTagKey(fitag)}"
+						# FreeImage_FindNextMetadata will return true or false, depending if it was able to advance to a new tag or is at the end of the tags.  fitag_pointer will be updated to the new tag.
+					end while FreeImage.FreeImage_FindNextMetadata(metadata_pointer, fitag_pointer)
+				end
+			end
+		end
+	end
